@@ -1,34 +1,42 @@
 const { React, ReactDOM } = BdApi;
 const { useCallback, useState } = React;
 import { DiscordModules, DOMTools } from "bdlib/src/modules";
+import { Toasts } from "bdlib/src/ui";
 import { isRunning, startCapture, stopCapture } from "../capture";
 import { saveSettings } from "../settings";
 import { random, waitForSelector } from "../utils";
 
 const id = "nitedani-stream-toggle";
-const buttonContainerSelector = "section[aria-label='User area']";
+
+// parent parent of the selector
+const buttonContainerSelector = "button[aria-label='Share Your Screen']";
 const isMounted = () => document.querySelector("#" + id);
 
 let observerSubscription: any = null;
 let buttonEl: HTMLButtonElement | null = null;
 
 const buttonStyle: React.CSSProperties = {
+  height: 32,
   backgroundColor: "var(--background-primary)",
   color: "var(--interactive-active)",
   fontSize: 14,
   transition: "background-color .17s ease,color .17s ease",
-  padding: "8px 16px",
+  padding: "0px 16px",
   fontWeight: 500,
   borderRadius: 3,
   cursor: "pointer",
   width: 0,
   flexGrow: 1,
-  textAlign: "center",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };
 const buttonClass = "nitedani-stream-toggle-button";
 
 import css from "./button.css";
 DOMTools.addStyle(buttonClass, css);
+DOMTools.addStyle("toast", Toasts.CSS);
+
 const Component = () => {
   const [, setNumber] = useState(0);
   const rerender = useCallback(() => setNumber((n) => n + 1), []);
@@ -45,7 +53,7 @@ const Component = () => {
       `${settings.server_url.replace("/api", "")}/stream/${settings.stream_id}`
     );
 
-    BdApi.showToast("Stream URL copied to clipboard");
+    Toasts.success("Stream URL copied to clipboard");
     rerender();
   }, []);
 
@@ -61,14 +69,13 @@ const Component = () => {
   return (
     <div
       style={{
-        height: 50,
-        //backgroundColor: "red",
+        height: 32,
         color: "#ececec",
         display: "flex",
-        gap: 12,
+        gap: 8,
         alignItems: "center",
-        padding: "0 8px",
-        borderBottom: "1px solid var(--background-modifier-accent)",
+        paddingTop: 4,
+        marginBottom: 4,
       }}
     >
       {!running && (
@@ -76,7 +83,12 @@ const Component = () => {
           <div
             onClick={handleStreamStart}
             className={buttonClass}
-            style={buttonStyle}
+            style={{
+              ...buttonStyle,
+              backgroundColor:
+                "hsl(139,calc(var(--saturation-factor, 1)*47.3%),43.9%)",
+              color: "#fff",
+            }}
           >
             Stream
           </div>
@@ -108,11 +120,20 @@ export const mountButton = async () => {
   const container = document.createElement("div");
   container.id = id;
   const el = await waitForSelector(buttonContainerSelector);
+  if (!el.parentElement) {
+    return;
+  }
+  const contEl = el.parentElement.parentElement;
+
+  if (!contEl) {
+    return;
+  }
+
   const running = isRunning();
   if (isMounted()) {
     return;
   }
- 
+
   buttonEl = document.createElement("button");
   buttonEl.innerText = running ? "Stop" : "Start";
   buttonEl.addEventListener("click", () => {
@@ -125,7 +146,7 @@ export const mountButton = async () => {
   });
 
   ReactDOM.render(React.createElement(Component, {}), container);
-  el.prepend(container);
+  contEl.lastChild!.before(container);
 
   observerSubscription ??= DOMTools.observer.subscribeToQuerySelector(
     () => mountButton(),

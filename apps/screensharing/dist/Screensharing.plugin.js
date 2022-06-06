@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.5"
+* @version "0.0.6"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5499,7 +5499,7 @@ const getSettingsPanel = ()=>{
 };
 
 ;// CONCATENATED MODULE: ./src/button/button.css
-const button_namespaceObject = ".nitedani-stream-toggle-button:hover {\n  background-color: var(--background-secondary) !important;\n}\n";
+const button_namespaceObject = ".nitedani-stream-toggle-button:hover {\n  background-color: var(--background-secondary) !important;\n}\n\nbutton[aria-label=\"Share Your Screen\"] {\n  background-color: var(--background-primary) !important;\n}\n";
 ;// CONCATENATED MODULE: ./src/button/button.tsx
 const { React: button_React , ReactDOM: button_ReactDOM  } = BdApi;
 const { useCallback , useState  } = button_React;
@@ -5507,27 +5507,33 @@ const { useCallback , useState  } = button_React;
 
 
 
+
 const id = "nitedani-stream-toggle";
-const buttonContainerSelector = "section[aria-label='User area']";
+// parent parent of the selector
+const buttonContainerSelector = "button[aria-label='Share Your Screen']";
 const isMounted = ()=>document.querySelector("#" + id);
 let observerSubscription = null;
 let buttonEl = null;
 const buttonStyle = {
+    height: 32,
     backgroundColor: "var(--background-primary)",
     color: "var(--interactive-active)",
     fontSize: 14,
     transition: "background-color .17s ease,color .17s ease",
-    padding: "8px 16px",
+    padding: "0px 16px",
     fontWeight: 500,
     borderRadius: 3,
     cursor: "pointer",
     width: 0,
     flexGrow: 1,
-    textAlign: "center"
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
 };
 const buttonClass = "nitedani-stream-toggle-button";
 
 domtools_DOMTools.addStyle(buttonClass, button_namespaceObject);
+domtools_DOMTools.addStyle("toast", Toast.CSS);
 const Component = ()=>{
     const [, setNumber] = useState(0);
     const rerender = useCallback(()=>setNumber((n)=>n + 1), []);
@@ -5539,7 +5545,7 @@ const Component = ()=>{
             }));
         startCapture();
         discordmodules.ElectronModule.copy(`${settings.server_url.replace("/api", "")}/stream/${settings.stream_id}`);
-        BdApi.showToast("Stream URL copied to clipboard");
+        Toast.success("Stream URL copied to clipboard");
         rerender();
     }, []);
     const handleStreamStop = useCallback(()=>{
@@ -5551,19 +5557,22 @@ const Component = ()=>{
     }, []);
     return /*#__PURE__*/ button_React.createElement("div", {
         style: {
-            height: 50,
-            //backgroundColor: "red",
+            height: 32,
             color: "#ececec",
             display: "flex",
-            gap: 12,
+            gap: 8,
             alignItems: "center",
-            padding: "0 8px",
-            borderBottom: "1px solid var(--background-modifier-accent)"
+            paddingTop: 4,
+            marginBottom: 4
         }
     }, !running && /*#__PURE__*/ button_React.createElement(button_React.Fragment, null, /*#__PURE__*/ button_React.createElement("div", {
         onClick: handleStreamStart,
         className: buttonClass,
-        style: buttonStyle
+        style: {
+            ...buttonStyle,
+            backgroundColor: "hsl(139,calc(var(--saturation-factor, 1)*47.3%),43.9%)",
+            color: "#fff"
+        }
     }, "Stream"), /*#__PURE__*/ button_React.createElement("div", {
         onClick: handleOpenSettings,
         className: buttonClass,
@@ -5578,6 +5587,13 @@ const mountButton = async ()=>{
     const container = document.createElement("div");
     container.id = id;
     const el = await waitForSelector(buttonContainerSelector);
+    if (!el.parentElement) {
+        return;
+    }
+    const contEl = el.parentElement.parentElement;
+    if (!contEl) {
+        return;
+    }
     const running = isRunning();
     if (isMounted()) {
         return;
@@ -5593,7 +5609,7 @@ const mountButton = async ()=>{
         }
     });
     button_ReactDOM.render(button_React.createElement(Component, {}), container);
-    el.prepend(container);
+    contEl.lastChild.before(container);
     observerSubscription ??= domtools_DOMTools.observer.subscribeToQuerySelector(()=>mountButton(), buttonContainerSelector, null, true);
 };
 const unmountButton = ()=>{
@@ -5659,7 +5675,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.5"};
+const package_namespaceObject = {"i8":"0.0.6"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
