@@ -1,12 +1,15 @@
+import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 import { fileURLToPath } from "url";
-import WebpackMessages from "webpack-messages";
 import webpack from "webpack";
+import WebpackMessages from "webpack-messages";
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const { name, version } = JSON.parse(readFileSync("./package.json", "utf8"));
 
 const banner = `/**
-* @name plugin
+* @name ${name}
+* @version ${version}
 */`;
 
 process.env.NODE_ENV = "production";
@@ -19,24 +22,24 @@ const config = {
   output: {
     path: join(__dirname, "dist"),
     filename: "Screensharing.plugin.js",
-    //chunkFormat: 'module',
+    // chunkFormat: 'module',
     library: "default",
     libraryTarget: "commonjs2",
     libraryExport: "default",
   },
 
   experiments: {
-    //outputModule: true,
+    // outputModule: true,
     // topLevelAwait: true,
   },
   ignoreWarnings: [
     /^(?!CriticalDependenciesWarning$)|CommonJsRequireContextDependency/,
   ],
-  //  externalsType: "module",
+  // externalsType: "module",
   externalsPresets: { node: true },
   module: {
     parser: {
-      //javascript: { importMeta: false },
+      // javascript: { importMeta: false },
     },
     rules: [
       {
@@ -61,7 +64,7 @@ const config = {
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".tsx", ".js", ".cjs", ".mjs", ".json"],
+    extensions: [".tsx", ".ts", ".tsx", ".js", ".cjs", ".mjs", ".json", ".css"],
     plugins: [
       //@ts-ignore
       new TsconfigPathsPlugin({
@@ -78,10 +81,9 @@ const config = {
       banner,
       raw: true,
     }),
-
     new webpack.IgnorePlugin({
       checkResource(resource) {
-        return ["electron"].includes(resource);
+        return ["request"].includes(resource);
       },
     }),
     new WebpackMessages({

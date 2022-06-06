@@ -121,7 +121,7 @@ export default class PluginUpdater {
    * @param {string} currentVersion
    * @param {string} content
    */
-  static defaultVersioner(content) {
+  static defaultVersioner(content: string) {
     const remoteVersion = content.match(/['"][0-9]+\.[0-9]+\.[0-9]+['"]/i);
     if (!remoteVersion) return "0.0.0";
     return remoteVersion.toString().replace(/['"]/g, "");

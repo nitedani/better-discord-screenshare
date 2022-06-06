@@ -5,6 +5,7 @@
     "types"
   ],
   "compilerOptions": {
+    "resolveJsonModule": true,
     "noImplicitAny": false,
     "baseUrl": ".",
     "module": "esnext",
