@@ -5,6 +5,10 @@ declare module BdApi {
   export const React: ReactInstance;
   export const ReactDOM: ReactDOMInstance;
 
+  export const Plugins: {
+    get(name: string): any | null;
+  };
+
   export function alert(title: string, content: string): void;
   export function clearCSS(id: string): void;
   export function deleteData(pluginName: string, key: string): void;
@@ -13,8 +17,8 @@ declare module BdApi {
   export function findModuleByProps(...props: string[]): any | null;
   export function getCore(): object;
   export function getData(pluginName: string, key: string): any | null;
-  export function getInternalInstance(node: HTMLElement): object | undefined;
-  export function getPlugin(name: string): object | null;
+  export function getInternalInstance(node: HTMLElement): any | undefined;
+
   export function injectCSS(id: string, css: string): object | null;
   export function linkJS(id: string, url: string): void;
   export function loadData(pluginName: string, key: string): any | null;

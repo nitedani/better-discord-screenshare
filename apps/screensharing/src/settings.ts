@@ -6,9 +6,9 @@ const defaults = {
   private: true,
   remote_enabled: false,
   direct_connect: true,
-  bitrate: 15388600,
+  bitrate: 10485760,
   resolution: "1920x1080",
-  framerate: 90,
+  framerate: 60,
   encoder: "nvenc",
   threads: 4,
   server_url: "http://0.tunnelr.co:4000/api",
@@ -42,9 +42,14 @@ export const getSettingsPanel = () => {
     new Settings.Textbox("Resolution", "", settings.resolution, (e) => {
       settings.resolution = e;
     }),
-    new Settings.Textbox("Bitrate", "", String(settings.bitrate), (e) => {
-      settings.bitrate = Number(e);
-    }),
+    new Settings.Textbox(
+      "Bitrate(Mbit)",
+      "",
+      String(settings.bitrate / 1024 / 1024),
+      (e) => {
+        settings.bitrate = Number(e) * 1024 * 1024;
+      }
+    ),
     new Settings.Textbox("Framerate", "", String(settings.framerate), (e) => {
       settings.framerate = Number(e);
     }),

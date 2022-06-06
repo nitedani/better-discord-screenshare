@@ -8,9 +8,13 @@
 import { Utilities, DOMTools, DiscordSelectors } from "../modules";
 import { Icons } from "../ui";
 
-import "../styles/toasts.css";
+import CSS from "../styles/toasts.css";
 
 export default class Toast {
+  static get CSS() {
+    return CSS;
+  }
+
   /** Shorthand for `type = "success"` for {@link module:Toasts.show} */
   static async success(content, options = {}) {
     return this.show(content, Object.assign(options, { type: "success" }));

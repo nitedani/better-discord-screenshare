@@ -2,6 +2,29 @@
 * @name screensharing
 * @version "0.0.3"
 */
+/*@cc_on
+@if (@_jscript)
+	
+// Offer to self-install for clueless users that try to run this directly.
+var shell = WScript.CreateObject("WScript.Shell");
+var fs = new ActiveXObject("Scripting.FileSystemObject");
+var pathPlugins = shell.ExpandEnvironmentStrings("%APPDATA%\\BetterDiscord\\plugins");
+var pathSelf = WScript.ScriptFullName;
+// Put the user at ease by addressing them in the first person
+shell.Popup("It looks like you've mistakenly tried to run me directly. \n(Don't do that!)", 0, "I'm a plugin for BetterDiscord", 0x30);
+if (fs.GetParentFolderName(pathSelf) === fs.GetAbsolutePathName(pathPlugins)) {
+  shell.Popup("I'm in the correct folder already.", 0, "I'm already installed", 0x40);
+} else if (!fs.FolderExists(pathPlugins)) {
+  shell.Popup("I can't find the BetterDiscord plugins folder.\nAre you sure it's even installed?", 0, "Can't install myself", 0x10);
+} else if (shell.Popup("Should I copy myself to BetterDiscord's plugins folder for you?", 0, "Do you need some help?", 0x34) === 6) {
+  fs.CopyFile(pathSelf, fs.BuildPath(pathPlugins, fs.GetFileName(pathSelf)), true);
+  // Show the user where to put plugins in the future
+  shell.Exec("explorer " + pathPlugins);
+  shell.Popup("I'm installed!", 0, "Successfully installed", 0x40);
+}
+WScript.Quit();
+
+@else@*/
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	// The require scope
@@ -2751,6 +2774,9 @@ const toasts_namespaceObject = ".toasts {\n    position: fixed;\n    display: fl
 
 
 class Toast {
+    static get CSS() {
+        return toasts_namespaceObject;
+    }
     /** Shorthand for `type = "success"` for {@link module:Toasts.show} */ static async success(content, options = {}) {
         return this.show(content, Object.assign(options, {
             type: "success"
@@ -3926,7 +3952,6 @@ const updates_namespaceObject = "#pluginNotice {\n    -webkit-app-region: drag;\
    * @param {module:PluginUpdater~versioner} [versioner] - versioner that finds the remote version. If not provided uses {@link module:PluginUpdater.defaultVersioner}.
    * @param {module:PluginUpdater~comparator} [comparator] - comparator that determines if there is an update. If not provided uses {@link module:PluginUpdater.defaultComparator}.
    */ static checkForUpdate(pluginName, currentVersion, updateURL, versioner, comparator) {
-        console.log(pluginName, currentVersion, updateURL, versioner, comparator);
         let updateLink = "https://raw.githubusercontent.com/rauenzi/BetterDiscordAddons/master/Plugins/" + pluginName + "/" + pluginName + ".plugin.js";
         if (updateURL) updateLink = updateURL;
         if (typeof versioner != "function") versioner = this.defaultVersioner;
@@ -3967,12 +3992,9 @@ const updates_namespaceObject = "#pluginNotice {\n    -webkit-app-region: drag;\
         return new Promise((resolve)=>{
             const request = require("request");
             request(updateLink, (error, response, result)=>{
-                console.log(result);
                 if (error || response.statusCode !== 200) return resolve();
                 const remoteVersion = window.PluginUpdates.plugins[updateLink].versioner(result);
-                console.log("remoteVersion", remoteVersion);
                 const hasUpdate = window.PluginUpdates.plugins[updateLink].comparator(window.PluginUpdates.plugins[updateLink].version, remoteVersion);
-                console.log("hasUpdate", hasUpdate);
                 if (hasUpdate) resolve(this.showUpdateNotice(pluginName, updateLink));
                 else resolve(this.removeUpdateNotice(pluginName));
             });
@@ -5425,9 +5447,9 @@ const defaults = {
     private: true,
     remote_enabled: false,
     direct_connect: true,
-    bitrate: 15388600,
+    bitrate: 10485760,
     resolution: "1920x1080",
-    framerate: 90,
+    framerate: 60,
     encoder: "nvenc",
     threads: 4,
     server_url: "http://0.tunnelr.co:4000/api"
@@ -5450,8 +5472,8 @@ const getSettingsPanel = ()=>{
     const settings = getSettings();
     return settingpanel.build(()=>saveSettings(settings), new textbox("Resolution", "", settings.resolution, (e)=>{
         settings.resolution = e;
-    }), new textbox("Bitrate", "", String(settings.bitrate), (e)=>{
-        settings.bitrate = Number(e);
+    }), new textbox("Bitrate(Mbit)", "", String(settings.bitrate / 1024 / 1024), (e)=>{
+        settings.bitrate = Number(e) * 1024 * 1024;
     }), new textbox("Framerate", "", String(settings.framerate), (e)=>{
         settings.framerate = Number(e);
     }), new types_switch("Remote control", "", settings.remote_enabled, (e)=>{
@@ -5476,7 +5498,11 @@ const getSettingsPanel = ()=>{
     }));
 };
 
-;// CONCATENATED MODULE: ./src/button.ts
+;// CONCATENATED MODULE: ./src/button/button.css
+const button_namespaceObject = ".nitedani-stream-toggle-button:hover {\n  background-color: var(--background-secondary) !important;\n}\n";
+;// CONCATENATED MODULE: ./src/button/button.tsx
+const { React: button_React , ReactDOM: button_ReactDOM  } = BdApi;
+const { useCallback , useState  } = button_React;
 
 
 
@@ -5486,7 +5512,71 @@ const buttonContainerSelector = "section[aria-label='User area']";
 const isMounted = ()=>document.querySelector("#" + id);
 let observerSubscription = null;
 let buttonEl = null;
+const buttonStyle = {
+    backgroundColor: "var(--background-primary)",
+    color: "var(--interactive-active)",
+    fontSize: 14,
+    transition: "background-color .17s ease,color .17s ease",
+    padding: "8px 16px",
+    fontWeight: 500,
+    borderRadius: 3,
+    cursor: "pointer",
+    width: 0,
+    flexGrow: 1,
+    textAlign: "center"
+};
+const buttonClass = "nitedani-stream-toggle-button";
+
+domtools_DOMTools.addStyle(buttonClass, button_namespaceObject);
+const Component = ()=>{
+    const [, setNumber] = useState(0);
+    const rerender = useCallback(()=>setNumber((n)=>n + 1), []);
+    const running = isRunning();
+    const handleStreamStart = useCallback(()=>{
+        const settings = saveSettings((state)=>({
+                ...state,
+                stream_id: random()
+            }));
+        startCapture();
+        discordmodules.ElectronModule.copy(`${settings.server_url.replace("/api", "")}/stream/${settings.stream_id}`);
+        BdApi.showToast("Stream URL copied to clipboard");
+        rerender();
+    }, []);
+    const handleStreamStop = useCallback(()=>{
+        stopCapture();
+        rerender();
+    }, []);
+    const handleOpenSettings = useCallback(()=>{
+        BdApi.Plugins.get("Screensharing.plugin.js").instance.showSettingsModal();
+    }, []);
+    return /*#__PURE__*/ button_React.createElement("div", {
+        style: {
+            height: 50,
+            //backgroundColor: "red",
+            color: "#ececec",
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+            padding: "0 8px",
+            borderBottom: "1px solid var(--background-modifier-accent)"
+        }
+    }, !running && /*#__PURE__*/ button_React.createElement(button_React.Fragment, null, /*#__PURE__*/ button_React.createElement("div", {
+        onClick: handleStreamStart,
+        className: buttonClass,
+        style: buttonStyle
+    }, "Stream"), /*#__PURE__*/ button_React.createElement("div", {
+        onClick: handleOpenSettings,
+        className: buttonClass,
+        style: buttonStyle
+    }, "Settings")), running && /*#__PURE__*/ button_React.createElement(button_React.Fragment, null, /*#__PURE__*/ button_React.createElement("div", {
+        onClick: handleStreamStop,
+        className: buttonClass,
+        style: buttonStyle
+    }, "Stop")));
+};
 const mountButton = async ()=>{
+    const container = document.createElement("div");
+    container.id = id;
     const el = await waitForSelector(buttonContainerSelector);
     const running = isRunning();
     if (isMounted()) {
@@ -5494,23 +5584,16 @@ const mountButton = async ()=>{
     }
     buttonEl = document.createElement("button");
     buttonEl.innerText = running ? "Stop" : "Start";
-    buttonEl.id = id;
     buttonEl.addEventListener("click", ()=>{
         if (running) {
             stopCapture();
             buttonEl.innerText = "Start";
         } else {
-            const settings = saveSettings((state)=>({
-                    ...state,
-                    stream_id: random()
-                }));
-            startCapture();
-            discordmodules.ElectronModule.copy(`${settings.server_url.replace("/api", "")}/stream/${settings.stream_id}`);
-            BdApi.showToast("Stream URL copied to clipboard");
             buttonEl.innerText = "Stop";
         }
     });
-    el.appendChild(buttonEl);
+    button_ReactDOM.render(button_React.createElement(Component, {}), container);
+    el.prepend(container);
     observerSubscription ??= domtools_DOMTools.observer.subscribeToQuerySelector(()=>mountButton(), buttonContainerSelector, null, true);
 };
 const unmountButton = ()=>{
@@ -5609,3 +5692,4 @@ class ScreensharingPlugin extends BasePlugin {
 module.exports["default"] = __webpack_exports__["default"];
 /******/ })()
 ;
+/*@end@*/

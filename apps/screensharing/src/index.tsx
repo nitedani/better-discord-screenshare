@@ -1,4 +1,4 @@
-import { mountButton, unmountButton } from "./button";
+import { mountButton, unmountButton } from "./button/button";
 import { stopCapture } from "./capture";
 import { getSettingsPanel } from "./settings";
 import { updateCapture } from "./update";

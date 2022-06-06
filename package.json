@@ -1,6 +1,6 @@
 {
   "name": "bettersharing",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "private": true,
   "workspaces": [
@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "_install": "npm run build && cp apps/screensharing/dist/Screensharing.plugin.js %appdata%/BetterDiscord/plugins",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
