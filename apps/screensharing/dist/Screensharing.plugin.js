@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.7"
+* @version "0.0.8"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5499,7 +5499,7 @@ const getSettingsPanel = ()=>{
 };
 
 ;// CONCATENATED MODULE: ./src/button/button.css
-const button_namespaceObject = "button[aria-label=\"Share Your Screen\"],\n.nitedani-stream-toggle-button:hover {\n  background-color: var(--background-secondary) !important;\n}\n\nbutton[aria-label=\"Share Your Screen\"] {\n  background-color: var(--background-primary) !important;\n}\n";
+const button_namespaceObject = "button[aria-label=\"Share Your Screen\"]:hover,\n.nitedani-stream-toggle-button:hover {\n  background-color: var(--background-secondary) !important;\n}\n\nbutton[aria-label=\"Share Your Screen\"] {\n  background-color: var(--background-primary) !important;\n}\n";
 ;// CONCATENATED MODULE: ./src/button/button.tsx
 const { React: button_React , ReactDOM: button_ReactDOM  } = BdApi;
 const { useCallback , useState  } = button_React;
@@ -5675,7 +5675,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.7"};
+const package_namespaceObject = {"i8":"0.0.8"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
