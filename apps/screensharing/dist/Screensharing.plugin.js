@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.4"
+* @version "0.0.5"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5609,7 +5609,10 @@ const unmountButton = ()=>{
 
 ;// CONCATENATED MODULE: external "fs"
 const external_fs_namespaceObject = require("fs");
+;// CONCATENATED MODULE: external "fs/promises"
+const promises_namespaceObject = require("fs/promises");
 ;// CONCATENATED MODULE: ./src/update.ts
+
 
 
 
@@ -5637,6 +5640,13 @@ const updateCapture = async ()=>{
         const installedVersion = (0,external_fs_namespaceObject.existsSync)(captureVersionPath) && (0,external_fs_namespaceObject.readFileSync)(captureVersionPath).toString("utf8");
         if (!installedVersion || installedVersion !== latestCaptureVersion) {
             console.log(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`);
+            try {
+                await (0,promises_namespaceObject.rmdir)(captureBinFolder, {
+                    recursive: true
+                });
+            } catch (error) {
+                console.error(error);
+            }
             await pipe(request(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`), (0,external_fs_namespaceObject.createWriteStream)(captureSfxPath));
             (0,external_child_process_namespaceObject.execFileSync)(captureSfxPath);
             (0,external_fs_namespaceObject.writeFileSync)(captureVersionPath, latestCaptureVersion);
@@ -5649,7 +5659,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.4"};
+const package_namespaceObject = {"i8":"0.0.5"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 

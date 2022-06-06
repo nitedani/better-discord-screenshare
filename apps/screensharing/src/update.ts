@@ -1,8 +1,8 @@
 import { execFileSync } from "child_process";
 import { createWriteStream, existsSync, readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { rmdir } from "fs/promises";
 import { promisify } from "util";
-import { captureSfxPath, captureVersionPath } from "./paths";
+import { captureSfxPath, captureVersionPath, captureBinFolder } from "./paths";
 import { pipe } from "./utils";
 
 let isUpdating = false;
@@ -33,6 +33,12 @@ export const updateCapture = async () => {
       console.log(
         `https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`
       );
+
+      try {
+        await rmdir(captureBinFolder, { recursive: true });
+      } catch (error) {
+        console.error(error);
+      }
 
       await pipe(
         request(

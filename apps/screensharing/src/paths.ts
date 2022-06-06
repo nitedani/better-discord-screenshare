@@ -7,6 +7,7 @@ export {
   configPath,
   gstreamerDllPath,
   gstreamerPluginsPath,
+  captureBinFolder,
 };
 
 const captureBinFolder = join(__dirname, "screen-capture");
