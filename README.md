@@ -1,5 +1,5 @@
-BetterDiscord plugin for screen share/remote control with unlimited resolution, bitrate, framerate
----
+<h2>better-discord-screenshare</h2>
+<h3>BetterDiscord plugin for screen share/remote control with unlimited resolution, bitrate, framerate</h3>
 <hr/>
 
 [DOWNLOAD](https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/Screensharing.plugin.js)
