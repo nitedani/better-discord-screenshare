@@ -1,4 +1,3 @@
-<h2>better-discord-screenshare</h2>
 <h3>BetterDiscord plugin for screen share/remote control with unlimited resolution, bitrate, framerate</h3>
 <hr/>
 
