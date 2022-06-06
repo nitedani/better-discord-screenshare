@@ -104,10 +104,12 @@ export default class PluginUpdater {
         if (error || response.statusCode !== 200) return resolve();
         const remoteVersion =
           window.PluginUpdates.plugins[updateLink].versioner(result);
+
         const hasUpdate = window.PluginUpdates.plugins[updateLink].comparator(
           window.PluginUpdates.plugins[updateLink].version,
           remoteVersion
         );
+
         if (hasUpdate) resolve(this.showUpdateNotice(pluginName, updateLink));
         else resolve(this.removeUpdateNotice(pluginName));
       });

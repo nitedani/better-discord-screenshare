@@ -9,7 +9,7 @@ const { name, version } = JSON.parse(readFileSync("./package.json", "utf8"));
 
 const banner = `/**
 * @name ${name}
-* @version ${version}
+* @version "${version}"
 */`;
 
 process.env.NODE_ENV = "production";

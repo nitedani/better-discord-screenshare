@@ -16,20 +16,31 @@ const defaults = {
 };
 
 export const saveSettings = (
-  cb: (oldSettings: typeof defaults) => Partial<typeof defaults>
+  newState:
+    | ((oldSettings: typeof defaults) => Partial<typeof defaults>)
+    | Partial<typeof defaults>
 ) => {
-  Utilities.saveSettings("nitedani-stream", cb(getSettings()));
+  console.log(defaults, newState);
+  BdApi.setData(
+    "Screensharing",
+    "settings",
+    typeof newState === "function"
+      ? newState(getSettings())
+      : { ...defaults, ...newState }
+  );
+
   return getSettings();
 };
 
 export const getSettings = (): typeof defaults => {
-  return Utilities.loadSettings("nitedani-stream", defaults);
+  const data = BdApi.getData("Screensharing", "settings");
+  return { ...defaults, ...data };
 };
 
 export const getSettingsPanel = () => {
   const settings = getSettings();
   return Settings.SettingPanel.build(
-    saveSettings,
+    () => saveSettings(settings),
     new Settings.Textbox("Resolution", "", settings.resolution, (e) => {
       settings.resolution = e;
     }),

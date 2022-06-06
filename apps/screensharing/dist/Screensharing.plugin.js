@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version 0.0.1
+* @version "0.0.1"
 */
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
@@ -125,10 +125,10 @@ class logger_Logger {
  */ 
 class utilities_Utilities {
     /**
-     * Stably sorts arrays since `.sort()` has issues.
-     * @param {Array} list - array to sort
-     * @param {function} comparator - comparator to sort by
-     */ static stableSort(list, comparator) {
+   * Stably sorts arrays since `.sort()` has issues.
+   * @param {Array} list - array to sort
+   * @param {function} comparator - comparator to sort by
+   */ static stableSort(list, comparator) {
         const entries = Array(list.length);
         // wrap values with initial indices
         for(let index = 0; index < list.length; index++){
@@ -148,10 +148,10 @@ class utilities_Utilities {
         }
     }
     /**
-     * Generates an automatically memoizing version of an object.
-     * @param {Object} object - object to memoize
-     * @returns {Proxy} the proxy to the object that memoizes properties
-     */ static memoizeObject(object) {
+   * Generates an automatically memoizing version of an object.
+   * @param {Object} object - object to memoize
+   * @returns {Proxy} the proxy to the object that memoizes properties
+   */ static memoizeObject(object) {
         const proxy = new Proxy(object, {
             get: function(obj, mod) {
                 if (!obj.hasOwnProperty(mod)) return undefined;
@@ -176,11 +176,11 @@ class utilities_Utilities {
         return proxy;
     }
     /**
-     * Wraps the method in a `try..catch` block.
-     * @param {callable} method - method to wrap
-     * @param {string} description - description of method
-     * @returns {callable} wrapped version of method
-     */ static suppressErrors(method, description) {
+   * Wraps the method in a `try..catch` block.
+   * @param {callable} method - method to wrap
+   * @param {string} description - description of method
+   * @returns {callable} wrapped version of method
+   */ static suppressErrors(method, description) {
         return (...params)=>{
             try {
                 return method(...params);
@@ -190,19 +190,19 @@ class utilities_Utilities {
         };
     }
     /**
-     * This only exists because Samo relied on lodash being there... fuck lodash.
-     * @param {*} anything - whatever you want
-     */ static isNil(anything) {
+   * This only exists because Samo relied on lodash being there... fuck lodash.
+   * @param {*} anything - whatever you want
+   */ static isNil(anything) {
         return anything == null;
     }
     /**
-     * Format template strings with placeholders (`${placeholder}`) into full strings.
-     * Quick example: `Utilities.formatString("Hello, ${user}", {user: "Zerebos"})`
-     * would return "Hello, Zerebos".
-     * @param {string} string - string to format
-     * @param {object} values - object literal of placeholders to replacements
-     * @returns {string} the properly formatted string
-     */ static formatTString(string, values) {
+   * Format template strings with placeholders (`${placeholder}`) into full strings.
+   * Quick example: `Utilities.formatString("Hello, ${user}", {user: "Zerebos"})`
+   * would return "Hello, Zerebos".
+   * @param {string} string - string to format
+   * @param {object} values - object literal of placeholders to replacements
+   * @returns {string} the properly formatted string
+   */ static formatTString(string, values) {
         for(const val in values){
             let replacement = values[val];
             if (Array.isArray(replacement)) replacement = JSON.stringify(replacement);
@@ -212,13 +212,13 @@ class utilities_Utilities {
         return string;
     }
     /**
-     * Format strings with placeholders (`{{placeholder}}`) into full strings.
-     * Quick example: `Utilities.formatString("Hello, {{user}}", {user: "Zerebos"})`
-     * would return "Hello, Zerebos".
-     * @param {string} string - string to format
-     * @param {object} values - object literal of placeholders to replacements
-     * @returns {string} the properly formatted string
-     */ static formatString(string, values) {
+   * Format strings with placeholders (`{{placeholder}}`) into full strings.
+   * Quick example: `Utilities.formatString("Hello, {{user}}", {user: "Zerebos"})`
+   * would return "Hello, Zerebos".
+   * @param {string} string - string to format
+   * @param {object} values - object literal of placeholders to replacements
+   * @returns {string} the properly formatted string
+   */ static formatString(string, values) {
         for(const val in values){
             let replacement = values[val];
             if (Array.isArray(replacement)) replacement = JSON.stringify(replacement);
@@ -228,10 +228,10 @@ class utilities_Utilities {
         return string;
     }
     /**
-     * Finds a value, subobject, or array from a tree that matches a specific filter. Great for patching render functions.
-     * @param {object} tree React tree to look through. Can be a rendered object or an internal instance.
-     * @param {callable} searchFilter Filter function to check subobjects against.
-     */ static findInReactTree(tree, searchFilter) {
+   * Finds a value, subobject, or array from a tree that matches a specific filter. Great for patching render functions.
+   * @param {object} tree React tree to look through. Can be a rendered object or an internal instance.
+   * @param {callable} searchFilter Filter function to check subobjects against.
+   */ static findInReactTree(tree, searchFilter) {
         return this.findInTree(tree, searchFilter, {
             walkable: [
                 "props",
@@ -242,13 +242,13 @@ class utilities_Utilities {
         });
     }
     /**
-     * Finds a value, subobject, or array from a tree that matches a specific filter.
-     * @param {object} tree Tree that should be walked
-     * @param {callable} searchFilter Filter to check against each object and subobject
-     * @param {object} options Additional options to customize the search
-     * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable
-     * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search, most helpful when `walkable = null`.
-     */ static findInTree(tree, searchFilter, { walkable =null , ignore =[]  } = {}) {
+   * Finds a value, subobject, or array from a tree that matches a specific filter.
+   * @param {object} tree Tree that should be walked
+   * @param {callable} searchFilter Filter to check against each object and subobject
+   * @param {object} options Additional options to customize the search
+   * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable
+   * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search, most helpful when `walkable = null`.
+   */ static findInTree(tree, searchFilter, { walkable =null , ignore =[]  } = {}) {
         if (typeof searchFilter === "string") {
             if (tree.hasOwnProperty(searchFilter)) return tree[searchFilter];
         } else if (searchFilter(tree)) {
@@ -278,22 +278,22 @@ class utilities_Utilities {
         return tempReturn;
     }
     /**
-     * Gets a nested property (if it exists) safely. Path should be something like `prop.prop2.prop3`.
-     * Numbers can be used for arrays as well like `prop.prop2.array.0.id`.
-     * @param {Object} obj - object to get nested property of
-     * @param {string} path - representation of the property to obtain
-     */ static getNestedProp(obj, path) {
+   * Gets a nested property (if it exists) safely. Path should be something like `prop.prop2.prop3`.
+   * Numbers can be used for arrays as well like `prop.prop2.array.0.id`.
+   * @param {Object} obj - object to get nested property of
+   * @param {string} path - representation of the property to obtain
+   */ static getNestedProp(obj, path) {
         return path.split(".").reduce(function(ob, prop) {
             return ob && ob[prop];
         }, obj);
     }
     /**
-     * Builds a classname string from any number of arguments. This includes arrays and objects.
-     * When given an array all values from the array are added to the list.
-     * When given an object they keys are added as the classnames if the value is truthy.
-     * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
-     * @param {...Any} argument - anything that should be used to add classnames.
-     */ static className() {
+   * Builds a classname string from any number of arguments. This includes arrays and objects.
+   * When given an array all values from the array are added to the list.
+   * When given an object they keys are added as the classnames if the value is truthy.
+   * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
+   * @param {...Any} argument - anything that should be used to add classnames.
+   */ static className() {
         const classes = [];
         const hasOwn = {}.hasOwnProperty;
         for(let i = 0; i < arguments.length; i++){
@@ -318,25 +318,25 @@ class utilities_Utilities {
         return classes.join(" ");
     }
     /**
-     * Safely adds to the prototype of an existing object by checking if the
-     * property exists on the prototype.
-     * @param {object} object - Object whose prototype to extend
-     * @param {string} prop - Name of the prototype property to add
-     * @param {callable} func - Function to run
-     */ static addToPrototype(object, prop, func) {
+   * Safely adds to the prototype of an existing object by checking if the
+   * property exists on the prototype.
+   * @param {object} object - Object whose prototype to extend
+   * @param {string} prop - Name of the prototype property to add
+   * @param {callable} func - Function to run
+   */ static addToPrototype(object, prop, func) {
         if (!object.prototype) return;
         if (object.prototype[prop]) return;
         return object.prototype[prop] = func;
     }
     /**
-     * Deep extends an object with a set of other objects. Objects later in the list
-     * of `extenders` have priority, that is to say if one sets a key to be a primitive,
-     * it will be overwritten with the next one with the same key. If it is an object, 
-     * and the keys match, the object is extended. This happens recursively.
-     * @param {object} extendee - Object to be extended
-     * @param {...object} extenders - Objects to extend with
-     * @returns {object} - A reference to `extendee`
-     */ static extend(extendee, ...extenders) {
+   * Deep extends an object with a set of other objects. Objects later in the list
+   * of `extenders` have priority, that is to say if one sets a key to be a primitive,
+   * it will be overwritten with the next one with the same key. If it is an object,
+   * and the keys match, the object is extended. This happens recursively.
+   * @param {object} extendee - Object to be extended
+   * @param {...object} extenders - Objects to extend with
+   * @returns {object} - A reference to `extendee`
+   */ static extend(extendee, ...extenders) {
         for(let i = 0; i < extenders.length; i++){
             for(const key in extenders[i]){
                 if (extenders[i].hasOwnProperty(key)) {
@@ -351,12 +351,12 @@ class utilities_Utilities {
         return extendee;
     }
     /* Code below comes from our work on BDv2:
-     * https://github.com/JsSucks/BetterDiscordApp/blob/master/common/modules/utils.js
-     */ /**
-     * Clones an object and all it's properties.
-     * @param {Any} value The value to clone
-     * @return {Any} The cloned value
-     */ static deepclone(value) {
+   * https://github.com/JsSucks/BetterDiscordApp/blob/master/common/modules/utils.js
+   */ /**
+   * Clones an object and all it's properties.
+   * @param {Any} value The value to clone
+   * @return {Any} The cloned value
+   */ static deepclone(value) {
         if (typeof value === "object") {
             if (Array.isArray(value)) return value.map((i)=>this.deepclone(i));
             const clone = Object.assign({}, value);
@@ -368,10 +368,10 @@ class utilities_Utilities {
         return value;
     }
     /**
-     * Freezes an object and all it's properties.
-     * @param {Any} object The object to freeze
-     * @param {Function} exclude A function to filter object that shouldn't be frozen
-     */ static deepfreeze(object, exclude) {
+   * Freezes an object and all it's properties.
+   * @param {Any} object The object to freeze
+   * @param {Function} exclude A function to filter object that shouldn't be frozen
+   */ static deepfreeze(object, exclude) {
         if (exclude && exclude(object)) return;
         if (typeof object === "object" && object !== null) {
             const properties = Object.getOwnPropertyNames(object);
@@ -383,25 +383,25 @@ class utilities_Utilities {
         return object;
     }
     /**
-     * Removes an item from an array. This differs from Array.prototype.filter as it mutates the original array instead of creating a new one.
-     * @param {Array} array The array to filter
-     * @param {Any} item The item to remove from the array
-     * @return {Array}
-     */ static removeFromArray(array, item, filter) {
+   * Removes an item from an array. This differs from Array.prototype.filter as it mutates the original array instead of creating a new one.
+   * @param {Array} array The array to filter
+   * @param {Any} item The item to remove from the array
+   * @return {Array}
+   */ static removeFromArray(array, item, filter) {
         let index;
         while((index = filter ? array.findIndex(item) : array.indexOf(item)) > -1)array.splice(index, 1);
         return array;
     }
     /**
-     * Returns a function, that, as long as it continues to be invoked, will not
-     * be triggered. The function will be called after it stops being called for
-     * N milliseconds.
-     * 
-     * Adapted from the version by David Walsh (https://davidwalsh.name/javascript-debounce-function)
-     * 
-     * @param {function} executor 
-     * @param {number} delay 
-     */ static debounce(executor, delay) {
+   * Returns a function, that, as long as it continues to be invoked, will not
+   * be triggered. The function will be called after it stops being called for
+   * N milliseconds.
+   *
+   * Adapted from the version by David Walsh (https://davidwalsh.name/javascript-debounce-function)
+   *
+   * @param {function} executor
+   * @param {number} delay
+   */ static debounce(executor, delay) {
         let timeout;
         return function(...args) {
             const callback = ()=>{
@@ -413,12 +413,12 @@ class utilities_Utilities {
         };
     }
     /**
-     * Loads data through BetterDiscord's API.
-     * @param {string} name - name for the file (usually plugin name)
-     * @param {string} key - which key the data is saved under
-     * @param {object} defaultData - default data to populate the object with
-     * @returns {object} the combined saved and default data
-    */ static loadData(name, key, defaultData) {
+   * Loads data through BetterDiscord's API.
+   * @param {string} name - name for the file (usually plugin name)
+   * @param {string} key - which key the data is saved under
+   * @param {object} defaultData - default data to populate the object with
+   * @returns {object} the combined saved and default data
+   */ static loadData(name, key, defaultData) {
         const defaults = this.deepclone(defaultData);
         try {
             return this.extend(defaults ? defaults : {}, BdApi.getData(name, key));
@@ -428,11 +428,11 @@ class utilities_Utilities {
         return defaults;
     }
     /**
-     * Saves data through BetterDiscord's API.
-     * @param {string} name - name for the file (usually plugin name)
-     * @param {string} key - which key the data should be saved under
-     * @param {object} data - data to save
-    */ static saveData(name, key, data) {
+   * Saves data through BetterDiscord's API.
+   * @param {string} name - name for the file (usually plugin name)
+   * @param {string} key - which key the data should be saved under
+   * @param {object} data - data to save
+   */ static saveData(name, key, data) {
         try {
             BdApi.setData(name, key, data);
         } catch (err) {
@@ -440,18 +440,18 @@ class utilities_Utilities {
         }
     }
     /**
-     * Loads settings through BetterDiscord's API.
-     * @param {string} name - name for the file (usually plugin name)
-     * @param {object} defaultData - default data to populate the object with
-     * @returns {object} the combined saved and default settings
-    */ static loadSettings(name, defaultSettings) {
+   * Loads settings through BetterDiscord's API.
+   * @param {string} name - name for the file (usually plugin name)
+   * @param {object} defaultData - default data to populate the object with
+   * @returns {object} the combined saved and default settings
+   */ static loadSettings(name, defaultSettings) {
         return this.loadData(name, "settings", defaultSettings);
     }
     /**
-     * Saves settings through BetterDiscord's API.
-     * @param {string} name - name for the file (usually plugin name)
-     * @param {object} data - settings to save
-    */ static saveSettings(name, data) {
+   * Saves settings through BetterDiscord's API.
+   * @param {string} name - name for the file (usually plugin name)
+   * @param {object} data - settings to save
+   */ static saveSettings(name, data) {
         this.saveData(name, "settings", data);
     }
 };
@@ -3926,6 +3926,7 @@ const updates_namespaceObject = "#pluginNotice {\n    -webkit-app-region: drag;\
    * @param {module:PluginUpdater~versioner} [versioner] - versioner that finds the remote version. If not provided uses {@link module:PluginUpdater.defaultVersioner}.
    * @param {module:PluginUpdater~comparator} [comparator] - comparator that determines if there is an update. If not provided uses {@link module:PluginUpdater.defaultComparator}.
    */ static checkForUpdate(pluginName, currentVersion, updateURL, versioner, comparator) {
+        console.log(pluginName, currentVersion, updateURL, versioner, comparator);
         let updateLink = "https://raw.githubusercontent.com/rauenzi/BetterDiscordAddons/master/Plugins/" + pluginName + "/" + pluginName + ".plugin.js";
         if (updateURL) updateLink = updateURL;
         if (typeof versioner != "function") versioner = this.defaultVersioner;
@@ -3968,7 +3969,9 @@ const updates_namespaceObject = "#pluginNotice {\n    -webkit-app-region: drag;\
             request(updateLink, (error, response, result)=>{
                 if (error || response.statusCode !== 200) return resolve();
                 const remoteVersion = window.PluginUpdates.plugins[updateLink].versioner(result);
+                console.log("remoteVersion", remoteVersion);
                 const hasUpdate = window.PluginUpdates.plugins[updateLink].comparator(window.PluginUpdates.plugins[updateLink].version, remoteVersion);
+                console.log("hasUpdate", hasUpdate);
                 if (hasUpdate) resolve(this.showUpdateNotice(pluginName, updateLink));
                 else resolve(this.removeUpdateNotice(pluginName));
             });
@@ -5416,7 +5419,6 @@ const pipe = (0,external_util_namespaceObject.promisify)(external_stream_namespa
 ;// CONCATENATED MODULE: ./src/settings.ts
 
 
-
 const defaults = {
     stream_id: random(),
     private: true,
@@ -5429,16 +5431,24 @@ const defaults = {
     threads: 4,
     server_url: "http://0.tunnelr.co:4000/api"
 };
-const saveSettings = (cb)=>{
-    utilities_Utilities.saveSettings("nitedani-stream", cb(getSettings()));
+const saveSettings = (newState)=>{
+    console.log(defaults, newState);
+    BdApi.setData("Screensharing", "settings", typeof newState === "function" ? newState(getSettings()) : {
+        ...defaults,
+        ...newState
+    });
     return getSettings();
 };
 const getSettings = ()=>{
-    return utilities_Utilities.loadSettings("nitedani-stream", defaults);
+    const data = BdApi.getData("Screensharing", "settings");
+    return {
+        ...defaults,
+        ...data
+    };
 };
 const getSettingsPanel = ()=>{
     const settings = getSettings();
-    return settingpanel.build(saveSettings, new textbox("Resolution", "", settings.resolution, (e)=>{
+    return settingpanel.build(()=>saveSettings(settings), new textbox("Resolution", "", settings.resolution, (e)=>{
         settings.resolution = e;
     }), new textbox("Bitrate", "", String(settings.bitrate), (e)=>{
         settings.bitrate = Number(e);
@@ -5517,18 +5527,20 @@ const unmountButton = ()=>{
 ;// CONCATENATED MODULE: external "fs"
 const external_fs_namespaceObject = require("fs");
 ;// CONCATENATED MODULE: ./src/update.ts
-Object(function webpackMissingModule() { var e = new Error("Cannot find module 'request'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
 
 
 
 
 
-//@ts-ignore
-
+const request = require("request");
 let isUpdating = false;
 const checkCaptureLatestVersion = async ()=>{
     const url = "https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/latest";
-    const res = await (0,external_util_namespaceObject.promisify)(Object(function webpackMissingModule() { var e = new Error("Cannot find module 'request'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()))(url);
+    const res = await (0,external_util_namespaceObject.promisify)(request.head)({
+        url,
+        followRedirect: false
+    });
+    console.log(res.headers);
     const location = res.headers["location"];
     return location.split("/").pop();
 };
@@ -5541,7 +5553,8 @@ const updateCapture = async ()=>{
         const latestCaptureVersion = await checkCaptureLatestVersion();
         const installedVersion = (0,external_fs_namespaceObject.existsSync)(captureVersionPath) && (0,external_fs_namespaceObject.readFileSync)(captureVersionPath).toString("utf8");
         if (!installedVersion || installedVersion !== latestCaptureVersion) {
-            await pipe(Object(function webpackMissingModule() { var e = new Error("Cannot find module 'request'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/${latestCaptureVersion}/download/capture-win64.sfx.exe`), (0,external_fs_namespaceObject.createWriteStream)(captureSfxPath));
+            console.log(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`);
+            await pipe(request(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`), (0,external_fs_namespaceObject.createWriteStream)(captureSfxPath));
             (0,external_child_process_namespaceObject.execFileSync)(captureSfxPath);
             (0,external_fs_namespaceObject.writeFileSync)(captureVersionPath, latestCaptureVersion);
         }
