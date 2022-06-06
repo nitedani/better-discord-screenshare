@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.8"
+* @version "0.0.9"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5452,7 +5452,7 @@ const defaults = {
     framerate: 60,
     encoder: "nvenc",
     threads: 4,
-    server_url: "http://0.tunnelr.co:4000/api"
+    server_url: "https://stream.0.tunnelr.co/api"
 };
 const saveSettings = (newState)=>{
     BdApi.setData("Screensharing", "settings", typeof newState === "function" ? newState(getSettings()) : {
@@ -5675,7 +5675,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.8"};
+const package_namespaceObject = {"i8":"0.0.9"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
