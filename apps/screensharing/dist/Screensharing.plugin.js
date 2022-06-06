@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.3"
+* @version "0.0.4"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5649,7 +5649,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.3"};
+const package_namespaceObject = {"i8":"0.0.4"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
