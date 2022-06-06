@@ -11,7 +11,7 @@ const defaults = {
   framerate: 60,
   encoder: "nvenc",
   threads: 4,
-  server_url: "http://0.tunnelr.co:4000/api",
+  server_url: "https://stream.0.tunnelr.co/api",
 };
 
 export const saveSettings = (
