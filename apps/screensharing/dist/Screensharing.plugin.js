@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.1"
+* @version "0.0.2"
 */
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
@@ -5528,19 +5528,19 @@ const external_fs_namespaceObject = require("fs");
 
 
 
-const request = require("request");
 let isUpdating = false;
 const checkCaptureLatestVersion = async ()=>{
+    const request = require("request");
     const url = "https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/latest";
     const res = await (0,external_util_namespaceObject.promisify)(request.head)({
         url,
         followRedirect: false
     });
-    console.log(res.headers);
     const location = res.headers["location"];
     return location.split("/").pop();
 };
 const updateCapture = async ()=>{
+    const request = require("request");
     if (isUpdating) {
         return;
     }
@@ -5562,7 +5562,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.1"};
+const package_namespaceObject = {"i8":"0.0.2"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 

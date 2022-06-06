@@ -5,22 +5,19 @@ import { promisify } from "util";
 import { captureSfxPath, captureVersionPath } from "./paths";
 import { pipe } from "./utils";
 
-const request = __non_webpack_require__("request");
-
 let isUpdating = false;
 
 export const checkCaptureLatestVersion = async () => {
+  const request = __non_webpack_require__("request");
   const url =
     "https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/latest";
   const res = await promisify(request.head)({ url, followRedirect: false });
-
-  console.log(res.headers);
-
   const location = res.headers["location"];
   return location.split("/").pop()!;
 };
 
 export const updateCapture = async () => {
+  const request = __non_webpack_require__("request");
   if (isUpdating) {
     return;
   }
