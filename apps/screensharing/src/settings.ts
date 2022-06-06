@@ -1,4 +1,3 @@
-import { Utilities } from "bdlib/src/modules";
 import { Settings } from "bdlib/src/ui";
 import { random } from "./utils";
 
@@ -20,7 +19,6 @@ export const saveSettings = (
     | ((oldSettings: typeof defaults) => Partial<typeof defaults>)
     | Partial<typeof defaults>
 ) => {
-  console.log(defaults, newState);
   BdApi.setData(
     "Screensharing",
     "settings",

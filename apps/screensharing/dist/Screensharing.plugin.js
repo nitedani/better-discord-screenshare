@@ -3926,7 +3926,6 @@ const updates_namespaceObject = "#pluginNotice {\n    -webkit-app-region: drag;\
    * @param {module:PluginUpdater~versioner} [versioner] - versioner that finds the remote version. If not provided uses {@link module:PluginUpdater.defaultVersioner}.
    * @param {module:PluginUpdater~comparator} [comparator] - comparator that determines if there is an update. If not provided uses {@link module:PluginUpdater.defaultComparator}.
    */ static checkForUpdate(pluginName, currentVersion, updateURL, versioner, comparator) {
-        console.log(pluginName, currentVersion, updateURL, versioner, comparator);
         let updateLink = "https://raw.githubusercontent.com/rauenzi/BetterDiscordAddons/master/Plugins/" + pluginName + "/" + pluginName + ".plugin.js";
         if (updateURL) updateLink = updateURL;
         if (typeof versioner != "function") versioner = this.defaultVersioner;
@@ -3969,9 +3968,7 @@ const updates_namespaceObject = "#pluginNotice {\n    -webkit-app-region: drag;\
             request(updateLink, (error, response, result)=>{
                 if (error || response.statusCode !== 200) return resolve();
                 const remoteVersion = window.PluginUpdates.plugins[updateLink].versioner(result);
-                console.log("remoteVersion", remoteVersion);
                 const hasUpdate = window.PluginUpdates.plugins[updateLink].comparator(window.PluginUpdates.plugins[updateLink].version, remoteVersion);
-                console.log("hasUpdate", hasUpdate);
                 if (hasUpdate) resolve(this.showUpdateNotice(pluginName, updateLink));
                 else resolve(this.removeUpdateNotice(pluginName));
             });
@@ -5432,7 +5429,6 @@ const defaults = {
     server_url: "http://0.tunnelr.co:4000/api"
 };
 const saveSettings = (newState)=>{
-    console.log(defaults, newState);
     BdApi.setData("Screensharing", "settings", typeof newState === "function" ? newState(getSettings()) : {
         ...defaults,
         ...newState
