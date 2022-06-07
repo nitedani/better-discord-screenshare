@@ -6,10 +6,10 @@ const defaults = {
   private: true,
   remote_enabled: false,
   direct_connect: true,
-  bitrate: 10485760,
+  bitrate: 5242880,
   resolution: "1920x1080",
-  framerate: 60,
-  encoder: "nvenc",
+  framerate: 45,
+  encoder: "vp8",
   threads: 4,
   server_url: "https://stream.0.tunnelr.co/api",
 };
