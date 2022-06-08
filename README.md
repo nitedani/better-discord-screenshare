@@ -1,6 +1,14 @@
 <h3>BetterDiscord plugin for screen share/remote control with unlimited resolution, bitrate, framerate</h3>
 <hr/>
 
+Settings:
+  - Resolution
+  - Framerate
+  - Bitrate
+  - Encoder
+  - Enable/disable peer-to-peer
+  - Enable/disable remote control
+
 [DOWNLOAD](https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/Screensharing.plugin.js)
 
 
@@ -16,6 +24,7 @@ Clicking the Stream button will copy a unique URL to the clipboard. The URL open
 <img src="docs/images/buttons.jpg" alt="drawing" width="200"/>
 
 <img src="docs/images/settings.jpg" alt="drawing" width="300"/>
+<img src="docs/images/sample.jpg" alt="drawing" width="600"/>
 
 
 
