@@ -12,7 +12,7 @@ const id = "nitedani-stream-toggle";
 const buttonContainerSelector = "button[aria-label='Share Your Screen']";
 const isMounted = () => document.querySelector("#" + id);
 
-let observerSubscription: any = null;
+let observerSubscription: NodeJS.Timer | null = null;
 let buttonEl: HTMLButtonElement | null = null;
 
 const buttonStyle: React.CSSProperties = {
@@ -117,48 +117,48 @@ const Component = () => {
 };
 
 export const mountButton = async () => {
-  const container = document.createElement("div");
-  container.id = id;
-  const el = await waitForSelector(buttonContainerSelector);
-  if (!el.parentElement) {
-    return;
-  }
-  const contEl = el.parentElement.parentElement;
-
-  if (!contEl) {
-    return;
-  }
-
-  const running = isRunning();
-  if (isMounted()) {
-    return;
-  }
-
-  buttonEl = document.createElement("button");
-  buttonEl.innerText = running ? "Stop" : "Start";
-  buttonEl.addEventListener("click", () => {
-    if (running) {
-      stopCapture();
-      buttonEl!.innerText = "Start";
-    } else {
-      buttonEl!.innerText = "Stop";
+  const mount = async () => {
+    const container = document.createElement("div");
+    container.id = id;
+    const el = document.querySelector(buttonContainerSelector);
+    if (!el || !el.parentElement) {
+      return;
     }
-  });
+    const contEl = el.parentElement.parentElement;
 
-  ReactDOM.render(React.createElement(Component, {}), container);
-  contEl.lastChild!.before(container);
+    if (!contEl) {
+      return;
+    }
 
-  observerSubscription ??= DOMTools.observer.subscribeToQuerySelector(
-    () => mountButton(),
-    buttonContainerSelector,
-    null,
-    true
-  );
+    const running = isRunning();
+    if (isMounted()) {
+      return;
+    }
+
+    buttonEl = document.createElement("button");
+    buttonEl.innerText = running ? "Stop" : "Start";
+    buttonEl.addEventListener("click", () => {
+      if (running) {
+        stopCapture();
+        buttonEl!.innerText = "Start";
+      } else {
+        buttonEl!.innerText = "Stop";
+      }
+    });
+
+    ReactDOM.render(React.createElement(Component, {}), container);
+    contEl.lastChild!.before(container);
+  };
+
+  observerSubscription ??= setInterval(() => {
+    if (isMounted()) return;
+    mount();
+  }, 100);
 };
 
 export const unmountButton = () => {
   if (observerSubscription) {
-    DOMTools.observer.unsubscribe(observerSubscription);
+    clearInterval(observerSubscription);
   }
   const el = isMounted();
   if (!el) {

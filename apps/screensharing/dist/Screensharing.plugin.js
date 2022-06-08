@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.10"
+* @version "0.0.11"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5584,37 +5584,42 @@ const Component = ()=>{
     }, "Stop")));
 };
 const mountButton = async ()=>{
-    const container = document.createElement("div");
-    container.id = id;
-    const el = await waitForSelector(buttonContainerSelector);
-    if (!el.parentElement) {
-        return;
-    }
-    const contEl = el.parentElement.parentElement;
-    if (!contEl) {
-        return;
-    }
-    const running = isRunning();
-    if (isMounted()) {
-        return;
-    }
-    buttonEl = document.createElement("button");
-    buttonEl.innerText = running ? "Stop" : "Start";
-    buttonEl.addEventListener("click", ()=>{
-        if (running) {
-            stopCapture();
-            buttonEl.innerText = "Start";
-        } else {
-            buttonEl.innerText = "Stop";
+    const mount = async ()=>{
+        const container = document.createElement("div");
+        container.id = id;
+        const el = document.querySelector(buttonContainerSelector);
+        if (!el || !el.parentElement) {
+            return;
         }
-    });
-    button_ReactDOM.render(button_React.createElement(Component, {}), container);
-    contEl.lastChild.before(container);
-    observerSubscription ??= domtools_DOMTools.observer.subscribeToQuerySelector(()=>mountButton(), buttonContainerSelector, null, true);
+        const contEl = el.parentElement.parentElement;
+        if (!contEl) {
+            return;
+        }
+        const running = isRunning();
+        if (isMounted()) {
+            return;
+        }
+        buttonEl = document.createElement("button");
+        buttonEl.innerText = running ? "Stop" : "Start";
+        buttonEl.addEventListener("click", ()=>{
+            if (running) {
+                stopCapture();
+                buttonEl.innerText = "Start";
+            } else {
+                buttonEl.innerText = "Stop";
+            }
+        });
+        button_ReactDOM.render(button_React.createElement(Component, {}), container);
+        contEl.lastChild.before(container);
+    };
+    observerSubscription ??= setInterval(()=>{
+        if (isMounted()) return;
+        mount();
+    }, 100);
 };
 const unmountButton = ()=>{
     if (observerSubscription) {
-        domtools_DOMTools.observer.unsubscribe(observerSubscription);
+        clearInterval(observerSubscription);
     }
     const el = isMounted();
     if (!el) {
@@ -5675,7 +5680,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.10"};
+const package_namespaceObject = {"i8":"0.0.11"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
