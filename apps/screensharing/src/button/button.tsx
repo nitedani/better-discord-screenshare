@@ -9,7 +9,8 @@ import { random, waitForSelector } from "../utils";
 const id = "nitedani-stream-toggle";
 
 // parent parent of the selector
-const buttonContainerSelector = "button[aria-label='Share Your Screen']";
+const buttonContainerSelector =
+  "section[aria-label='User area'] button[aria-label='Share Your Screen']";
 const isMounted = () => document.querySelector("#" + id);
 
 let observerSubscription: NodeJS.Timer | null = null;
@@ -159,6 +160,7 @@ export const mountButton = async () => {
 export const unmountButton = () => {
   if (observerSubscription) {
     clearInterval(observerSubscription);
+    observerSubscription = null;
   }
   const el = isMounted();
   if (!el) {

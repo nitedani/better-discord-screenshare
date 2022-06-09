@@ -1,6 +1,6 @@
 /**
 * @name screensharing
-* @version "0.0.11"
+* @version "0.0.12"
 */
 /*@cc_on
 @if (@_jscript)
@@ -5510,7 +5510,7 @@ const { useCallback , useState  } = button_React;
 
 const id = "nitedani-stream-toggle";
 // parent parent of the selector
-const buttonContainerSelector = "button[aria-label='Share Your Screen']";
+const buttonContainerSelector = "section[aria-label='User area'] button[aria-label='Share Your Screen']";
 const isMounted = ()=>document.querySelector("#" + id);
 let observerSubscription = null;
 let buttonEl = null;
@@ -5620,6 +5620,7 @@ const mountButton = async ()=>{
 const unmountButton = ()=>{
     if (observerSubscription) {
         clearInterval(observerSubscription);
+        observerSubscription = null;
     }
     const el = isMounted();
     if (!el) {
@@ -5680,7 +5681,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.11"};
+const package_namespaceObject = {"i8":"0.0.12"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
