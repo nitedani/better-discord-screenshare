@@ -8,15 +8,12 @@ import { random } from "../utils";
 import css from "./button.css";
 
 const id = "nitedani-stream-toggle";
-
 // parent parent of the selector
 const buttonContainerSelector =
   "section[aria-label='User area'] button[aria-label='Share Your Screen']";
+
 const isMounted = () => document.querySelector("#" + id);
-
 let observerSubscription: NodeJS.Timer | null = null;
-let buttonEl: HTMLButtonElement | null = null;
-
 const buttonStyle: React.CSSProperties = {
   height: 32,
   backgroundColor: "var(--background-primary)",
@@ -65,7 +62,9 @@ const Component = () => {
   }, []);
 
   const handleOpenSettings = useCallback(() => {
-    BdApi.Plugins.get("BetterScreensharing.plugin.js")!.instance.showSettingsModal();
+    BdApi.Plugins.get(
+      "BetterScreensharing.plugin.js"
+    )!.instance.showSettingsModal();
   }, []);
 
   return (
@@ -132,33 +131,15 @@ export const mountButton = async () => {
     const container = document.createElement("div");
     container.id = id;
     const el = document.querySelector(buttonContainerSelector);
-    if (!el || !el.parentElement) {
+    const el2 = el?.parentElement?.parentElement;
+    if (!el2) {
       return;
     }
-    const contEl = el.parentElement.parentElement;
-
-    if (!contEl) {
-      return;
-    }
-
-    const running = isRunning();
     if (isMounted()) {
       return;
     }
-
-    buttonEl = document.createElement("button");
-    buttonEl.innerText = running ? "Stop" : "Start";
-    buttonEl.addEventListener("click", () => {
-      if (running) {
-        stopCapture();
-        buttonEl!.innerText = "Start";
-      } else {
-        buttonEl!.innerText = "Stop";
-      }
-    });
-
     ReactDOM.render(React.createElement(Component, {}), container);
-    contEl.lastChild!.before(container);
+    el2.lastChild!.before(container);
   };
 
   observerSubscription ??= setInterval(() => {

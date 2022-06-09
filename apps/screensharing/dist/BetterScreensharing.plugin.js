@@ -1,6 +1,6 @@
 /**
 * @name BetterScreensharing
-* @version "0.0.15"
+* @version "0.0.16"
 */
 /*@cc_on
 @if (@_jscript)
@@ -209,7 +209,6 @@ const id = "nitedani-stream-toggle";
 const buttonContainerSelector = "section[aria-label='User area'] button[aria-label='Share Your Screen']";
 const isMounted = ()=>document.querySelector("#" + id);
 let observerSubscription = null;
-let buttonEl = null;
 const buttonStyle = {
     height: 32,
     backgroundColor: "var(--background-primary)",
@@ -291,29 +290,15 @@ const mountButton = async ()=>{
         const container = document.createElement("div");
         container.id = id;
         const el = document.querySelector(buttonContainerSelector);
-        if (!el || !el.parentElement) {
+        const el2 = el?.parentElement?.parentElement;
+        if (!el2) {
             return;
         }
-        const contEl = el.parentElement.parentElement;
-        if (!contEl) {
-            return;
-        }
-        const running = isRunning();
         if (isMounted()) {
             return;
         }
-        buttonEl = document.createElement("button");
-        buttonEl.innerText = running ? "Stop" : "Start";
-        buttonEl.addEventListener("click", ()=>{
-            if (running) {
-                stopCapture();
-                buttonEl.innerText = "Start";
-            } else {
-                buttonEl.innerText = "Stop";
-            }
-        });
         ReactDOM.render(React.createElement(Component, {}), container);
-        contEl.lastChild.before(container);
+        el2.lastChild.before(container);
     };
     observerSubscription ??= setInterval(()=>{
         if (isMounted()) return;
@@ -384,7 +369,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.15"};
+const package_namespaceObject = {"i8":"0.0.16"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
