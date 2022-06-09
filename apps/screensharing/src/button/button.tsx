@@ -65,7 +65,7 @@ const Component = () => {
   }, []);
 
   const handleOpenSettings = useCallback(() => {
-    BdApi.Plugins.get("Screensharing.plugin.js")!.instance.showSettingsModal();
+    BdApi.Plugins.get("BetterScreensharing.plugin.js")!.instance.showSettingsModal();
   }, []);
 
   return (

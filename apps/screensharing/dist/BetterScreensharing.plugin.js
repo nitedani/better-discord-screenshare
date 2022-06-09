@@ -1,6 +1,6 @@
 /**
 * @name BetterScreensharing
-* @version "0.0.14"
+* @version "0.0.15"
 */
 /*@cc_on
 @if (@_jscript)
@@ -76,7 +76,7 @@ const captureBinFolder = (0,external_path_namespaceObject.join)(__dirname, "scre
 const captureBinExePath = (0,external_path_namespaceObject.join)(captureBinFolder, "main.exe");
 const captureVersionPath = (0,external_path_namespaceObject.join)(captureBinFolder, "version.txt");
 const captureSfxPath = (0,external_path_namespaceObject.join)(__dirname, "capture-win64.sfx.exe");
-const configPath = (0,external_path_namespaceObject.join)(__dirname, "Screensharing.config.json");
+const configPath = (0,external_path_namespaceObject.join)(__dirname, "BetterScreensharing.config.json");
 const gstreamerDllPath = (0,external_path_namespaceObject.join)(captureBinFolder, "dll");
 const gstreamerPluginsPath = (0,external_path_namespaceObject.join)(captureBinFolder, "plugins");
 
@@ -149,14 +149,14 @@ const defaults = {
     server_url: "https://stream.0.tunnelr.co/api"
 };
 const saveSettings = (newState)=>{
-    BdApi.setData("Screensharing", "settings", typeof newState === "function" ? newState(getSettings()) : {
+    BdApi.setData("BetterScreensharing", "settings", typeof newState === "function" ? newState(getSettings()) : {
         ...defaults,
         ...newState
     });
     return getSettings();
 };
 const getSettings = ()=>{
-    const data = BdApi.getData("Screensharing", "settings");
+    const data = BdApi.getData("BetterScreensharing", "settings");
     return {
         ...defaults,
         ...data
@@ -249,7 +249,7 @@ const Component = ()=>{
         rerender();
     }, []);
     const handleOpenSettings = useCallback(()=>{
-        BdApi.Plugins.get("Screensharing.plugin.js").instance.showSettingsModal();
+        BdApi.Plugins.get("BetterScreensharing.plugin.js").instance.showSettingsModal();
     }, []);
     return /*#__PURE__*/ React.createElement("div", {
         style: {
@@ -384,7 +384,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.14"};
+const package_namespaceObject = {"i8":"0.0.15"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
@@ -455,7 +455,7 @@ const createClass = ()=>{
                         await wait();
                         BdApi.Plugins.enable("ZeresPluginLibrary");
                         await wait();
-                        BdApi.Plugins.reload("Screensharing.plugin.js");
+                        BdApi.Plugins.reload("BetterScreensharing.plugin.js");
                         await wait();
                         BdApi.Plugins.enable("BetterScreensharing");
                     });

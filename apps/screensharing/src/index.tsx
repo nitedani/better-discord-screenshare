@@ -91,7 +91,7 @@ const createClass = () => {
                 await wait();
                 BdApi.Plugins.enable("ZeresPluginLibrary");
                 await wait();
-                BdApi.Plugins.reload("Screensharing.plugin.js");
+                BdApi.Plugins.reload("BetterScreensharing.plugin.js");
                 await wait();
                 BdApi.Plugins.enable("BetterScreensharing");
               }

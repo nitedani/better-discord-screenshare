@@ -20,7 +20,7 @@ export const saveSettings = (
     | Partial<typeof defaults>
 ) => {
   BdApi.setData(
-    "Screensharing",
+    "BetterScreensharing",
     "settings",
     typeof newState === "function"
       ? newState(getSettings())
@@ -31,7 +31,7 @@ export const saveSettings = (
 };
 
 export const getSettings = (): typeof defaults => {
-  const data = BdApi.getData("Screensharing", "settings");
+  const data = BdApi.getData("BetterScreensharing", "settings");
   return { ...defaults, ...data };
 };
 
