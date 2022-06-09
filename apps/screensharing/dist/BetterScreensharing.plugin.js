@@ -1,6 +1,6 @@
 /**
 * @name BetterScreensharing
-* @version "0.0.16"
+* @version "0.0.17"
 */
 /*@cc_on
 @if (@_jscript)
@@ -287,14 +287,14 @@ const mountButton = async ()=>{
         DOMTools.addStyle("toast", Toasts.CSS);
     }
     const mount = async ()=>{
+        if (isMounted()) {
+            return;
+        }
         const container = document.createElement("div");
         container.id = id;
         const el = document.querySelector(buttonContainerSelector);
         const el2 = el?.parentElement?.parentElement;
         if (!el2) {
-            return;
-        }
-        if (isMounted()) {
             return;
         }
         ReactDOM.render(React.createElement(Component, {}), container);
@@ -369,7 +369,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.16"};
+const package_namespaceObject = {"i8":"0.0.17"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 

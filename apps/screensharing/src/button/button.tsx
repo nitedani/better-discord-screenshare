@@ -128,14 +128,14 @@ export const mountButton = async () => {
   }
 
   const mount = async () => {
+    if (isMounted()) {
+      return;
+    }
     const container = document.createElement("div");
     container.id = id;
     const el = document.querySelector(buttonContainerSelector);
     const el2 = el?.parentElement?.parentElement;
     if (!el2) {
-      return;
-    }
-    if (isMounted()) {
       return;
     }
     ReactDOM.render(React.createElement(Component, {}), container);
