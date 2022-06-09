@@ -46,7 +46,7 @@ const config = {
   target: "node",
   output: {
     path: join(__dirname, "dist"),
-    filename: "Screensharing.plugin.js",
+    filename: "BetterScreensharing.plugin.js",
     // chunkFormat: 'module',
     library: "default",
     libraryTarget: "commonjs2",
@@ -113,7 +113,7 @@ const config = {
     }),
     new webpack.IgnorePlugin({
       checkResource(resource) {
-        return ["request"].includes(resource);
+        return ["request", "electron"].includes(resource);
       },
     }),
     new WebpackMessages({

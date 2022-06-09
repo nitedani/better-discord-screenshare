@@ -1,10 +1,11 @@
 const { React, ReactDOM } = BdApi;
 const { useCallback, useState } = React;
-import { DiscordModules, DOMTools } from "bdlib/src/modules";
-import { Toasts } from "bdlib/src/ui";
+
+import { getLibrary } from "src/library";
 import { isRunning, startCapture, stopCapture } from "../capture";
 import { saveSettings } from "../settings";
-import { random, waitForSelector } from "../utils";
+import { random } from "../utils";
+import css from "./button.css";
 
 const id = "nitedani-stream-toggle";
 
@@ -34,11 +35,11 @@ const buttonStyle: React.CSSProperties = {
 };
 const buttonClass = "nitedani-stream-toggle-button";
 
-import css from "./button.css";
-DOMTools.addStyle(buttonClass, css);
-DOMTools.addStyle("toast", Toasts.CSS);
+let injectedStyle = false;
 
 const Component = () => {
+  const Library = getLibrary();
+  const { DiscordModules, Toasts } = Library!;
   const [, setNumber] = useState(0);
   const rerender = useCallback(() => setNumber((n) => n + 1), []);
   const running = isRunning();
@@ -118,6 +119,15 @@ const Component = () => {
 };
 
 export const mountButton = async () => {
+  const Library = getLibrary();
+  const { DOMTools, Toasts } = Library!;
+
+  if (!injectedStyle) {
+    injectedStyle = true;
+    DOMTools.addStyle(buttonClass, css);
+    DOMTools.addStyle("toast", Toasts.CSS);
+  }
+
   const mount = async () => {
     const container = document.createElement("div");
     container.id = id;

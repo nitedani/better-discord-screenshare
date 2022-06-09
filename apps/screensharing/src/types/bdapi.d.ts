@@ -7,8 +7,12 @@ declare module BdApi {
 
   export const Plugins: {
     get(name: string): any | null;
+    reload(name: string): void;
+    enable(name: string): void;
+    folder: any;
   };
 
+  export function showConfirmationModal(...args: any);
   export function alert(title: string, content: string): void;
   export function clearCSS(id: string): void;
   export function deleteData(pluginName: string, key: string): void;

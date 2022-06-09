@@ -9,7 +9,7 @@ Settings:
   - Enable/disable peer-to-peer
   - Enable/disable remote control
 
-[DOWNLOAD](https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/Screensharing.plugin.js)
+[DOWNLOAD](https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/BetterScreensharing.plugin.js)
 
 
 This plugin uses the latest release of my other project: https://github.com/nitedani/gstreamer-go-wrtc-remote

@@ -1,4 +1,4 @@
-import { Settings } from "bdlib/src/ui";
+import { getLibrary } from "./library";
 import { random } from "./utils";
 
 const defaults = {
@@ -36,6 +36,8 @@ export const getSettings = (): typeof defaults => {
 };
 
 export const getSettingsPanel = () => {
+  const Library = getLibrary();
+  const { Settings } = Library!;
   const settings = getSettings();
   return Settings.SettingPanel.build(
     () => saveSettings(settings),

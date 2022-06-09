@@ -1,16 +1,12 @@
 {
-  "name": "screensharing",
-  "version": "0.0.12",
+  "name": "BetterScreensharing",
+  "version": "0.0.13",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "webpack"
   },
-  "dependencies": {
-    "axios": "^0.27.2",
-    "bdlib": "workspace:*",
-    "got": "^12.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@swc/core": "^1.2.196",
     "@types/node": "^17.0.40",
