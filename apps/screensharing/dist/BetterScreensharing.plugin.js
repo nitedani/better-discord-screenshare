@@ -1,6 +1,6 @@
 /**
 * @name BetterScreensharing
-* @version "0.0.13"
+* @version "0.0.14"
 */
 /*@cc_on
 @if (@_jscript)
@@ -384,7 +384,7 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.13"};
+const package_namespaceObject = {"i8":"0.0.14"};
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
@@ -405,7 +405,7 @@ const config = {
         version: package_namespaceObject.i8,
         description: "BetterScreensharing",
         github: "https://github.com/nitedani/better-discord-screenshare",
-        github_raw: "https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/Screensharing.plugin.js"
+        github_raw: "https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/BetterScreensharing.plugin.js"
     }
 };
 const createClass = ()=>{

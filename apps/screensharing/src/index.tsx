@@ -19,7 +19,7 @@ const config = {
     description: "BetterScreensharing",
     github: "https://github.com/nitedani/better-discord-screenshare",
     github_raw:
-      "https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/Screensharing.plugin.js",
+      "https://raw.githubusercontent.com/nitedani/better-discord-screenshare/main/apps/screensharing/dist/BetterScreensharing.plugin.js",
   },
   // changelog: [{ title: "First", items: ["First"] }],
 };
