@@ -4,7 +4,8 @@ import {
   configPath,
   gstreamerDllPath,
   gstreamerPluginsPath,
-} from "./paths";
+} from "../paths";
+import { connectSocket, disconnectSocket } from "./socket";
 
 let cp: ChildProcess | null = null;
 
@@ -17,11 +18,18 @@ export const startCapture = () => {
     },
   });
 
-  cp.stdout?.on("data", (data) => {
+  cp.stdout?.on("data", (data: Buffer) => {
     console.log(data.toString());
   });
   cp.stderr?.on("data", (data) => {
-    console.log(data.toString());
+    const str = data.toString();
+    console.log(str);
+
+    console.log(str.includes("Connected to signaling server"));
+
+    if (str.includes("Connected to signaling server")) {
+      connectSocket();
+    }
   });
 
   cp.once("exit", (code) => {
@@ -34,6 +42,7 @@ export const stopCapture = () => {
     cp.kill("SIGTERM");
     cp = null;
   }
+  disconnectSocket();
 };
 
 export const isRunning = () => {

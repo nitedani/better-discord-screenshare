@@ -5,5 +5,5 @@ export const setLibrary = (lib: Library) => {
 };
 
 export const getLibrary = () => {
-  return library;
+  return library as Library;
 };

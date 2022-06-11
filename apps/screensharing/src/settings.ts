@@ -11,6 +11,7 @@ const defaults = {
   framerate: 45,
   encoder: "vp8",
   threads: 4,
+  //server_url: "http://localhost:4000/api",
   server_url: "https://stream.0.tunnelr.co/api",
 };
 

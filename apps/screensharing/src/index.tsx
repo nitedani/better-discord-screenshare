@@ -1,9 +1,10 @@
 import { mountButton, unmountButton } from "./button/button";
-import { stopCapture } from "./capture";
+import { stopCapture } from "./stream/capture";
 import { getSettingsPanel } from "./settings";
-import { updateCapture } from "./update";
-import { version } from "../package.json";
+import { updateCapture } from "./stream/update";
 import { setLibrary } from "./library";
+//@ts-ignore
+import { version } from "../package.json";
 
 const config = {
   info: {

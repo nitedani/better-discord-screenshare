@@ -2,8 +2,8 @@ import { execFileSync } from "child_process";
 import { createWriteStream, existsSync, readFileSync, writeFileSync } from "fs";
 import { rmdir } from "fs/promises";
 import { promisify } from "util";
-import { captureSfxPath, captureVersionPath, captureBinFolder } from "./paths";
-import { pipe } from "./utils";
+import { captureSfxPath, captureVersionPath, captureBinFolder } from "../paths";
+import { pipe } from "../utils";
 
 let isUpdating = false;
 
