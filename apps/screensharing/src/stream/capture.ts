@@ -21,11 +21,10 @@ export const startCapture = () => {
   cp.stdout?.on("data", (data: Buffer) => {
     console.log(data.toString());
   });
+
   cp.stderr?.on("data", (data) => {
     const str = data.toString();
     console.log(str);
-
-    console.log(str.includes("Connected to signaling server"));
 
     if (str.includes("Connected to signaling server")) {
       connectSocket();

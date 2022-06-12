@@ -2,20 +2,17 @@ const { React, ReactDOM } = BdApi;
 const { useCallback, useState, useEffect } = React;
 
 import { getLibrary } from "src/library";
-import { isRunning, startCapture, stopCapture } from "../stream/capture";
+import { createListeners, StreamEvents } from "src/stream/events/events";
+import { ViewerConnectionEvent } from "src/stream/socket";
 import { saveSettings } from "../settings";
+import { isRunning, startCapture, stopCapture } from "../stream/capture";
 import { random } from "../utils";
 import css from "./button.css";
 
-import { StreamEvents, ViewerConnectionEvent } from "src/stream/socket";
-
 const id = "nitedani-stream-toggle";
-// parent parent of the selector
+const buttonClass = "nitedani-stream-toggle-button";
 const userAreaSelector = "section[aria-label='User area']";
 const streamAreaSelector = "button[aria-label='Share Your Screen']";
-
-const isMounted = () => document.querySelector("#" + id);
-let observerSubscription: NodeJS.Timer | null = null;
 const buttonStyle: React.CSSProperties = {
   height: 32,
   backgroundColor: "var(--background-primary)",
@@ -33,9 +30,12 @@ const buttonStyle: React.CSSProperties = {
   alignItems: "center",
   position: "relative",
 };
-const buttonClass = "nitedani-stream-toggle-button";
 
 let injectedStyle = false;
+let currentLocation = "";
+let observerSubscription: NodeJS.Timer | null = null;
+
+const isMounted = () => document.querySelector("#" + id);
 
 const Component = () => {
   const { DiscordModules, Toasts } = getLibrary();
@@ -43,16 +43,24 @@ const Component = () => {
   const [viewers, setViewers] = useState(0);
 
   useEffect(() => {
-    StreamEvents.on("viewer_connected", (event: ViewerConnectionEvent) => {
-      setViewers(event.viewerCount);
-    });
-
-    StreamEvents.on("viewer_disconnected", (event: ViewerConnectionEvent) => {
-      setViewers(event.viewerCount);
-    });
+    const listeners = createListeners([
+      {
+        event: "viewer_connected",
+        listener: (event: ViewerConnectionEvent) => {
+          setViewers(event.viewerCount);
+        },
+      },
+      {
+        event: "viewer_disconnected",
+        listener: (event: ViewerConnectionEvent) => {
+          setViewers(event.viewerCount);
+        },
+      },
+    ]);
+    listeners.start();
 
     return () => {
-      StreamEvents.removeAllListeners();
+      listeners.stop();
     };
   }, []);
 
@@ -161,14 +169,13 @@ const getContainerElement = () => {
   }
 };
 
-let currentLocation = "";
 export const mountButton = async () => {
   const { DOMTools, Toasts } = getLibrary();
 
   if (!injectedStyle) {
     injectedStyle = true;
     DOMTools.addStyle(buttonClass, css);
-    DOMTools.addStyle("toast", Toasts.CSS);
+    DOMTools.addStyle("nitedani-toast", Toasts.CSS);
   }
 
   const mount = async () => {
@@ -213,4 +220,9 @@ export const unmountButton = () => {
     return;
   }
   el.remove();
+  const { DOMTools } = getLibrary();
+  DOMTools.removeStyle(buttonClass);
+  DOMTools.removeStyle("nitedani-toast");
+  injectedStyle = false;
+  currentLocation = "";
 };

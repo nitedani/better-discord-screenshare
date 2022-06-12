@@ -37,8 +37,7 @@ export const getSettings = (): typeof defaults => {
 };
 
 export const getSettingsPanel = () => {
-  const Library = getLibrary();
-  const { Settings } = Library!;
+  const { Settings } = getLibrary();
   const settings = getSettings();
   return Settings.SettingPanel.build(
     () => saveSettings(settings),

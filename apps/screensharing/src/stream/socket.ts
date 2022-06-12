@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 import { getSettings } from "src/settings";
-import { EventEmitter } from "events";
+import { StreamEvents } from "./events/events";
 
 export interface ViewerConnectionEvent {
   type: "viewer_connected" | "viewer_disconnected";
@@ -8,9 +8,7 @@ export interface ViewerConnectionEvent {
   viewerCount: number;
 }
 
-export const StreamEvents = new EventEmitter();
-
-let socket: any | null = null;
+let socket: SocketIOClient.Socket | null = null;
 
 export const connectSocket = async () => {
   if (socket?.connected) {
@@ -34,6 +32,7 @@ export const connectSocket = async () => {
 
 export const disconnectSocket = () => {
   if (socket) {
+    socket.removeAllListeners();
     socket.close();
     socket = null;
   }

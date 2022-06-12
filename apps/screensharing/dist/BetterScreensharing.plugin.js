@@ -1,6 +1,6 @@
 /**
 * @name BetterScreensharing
-* @version "0.0.18"
+* @version "0.0.19"
 */
 /*@cc_on
 @if (@_jscript)
@@ -10640,24 +10640,27 @@ const getLibrary = ()=>{
     return library;
 };
 
-// EXTERNAL MODULE: external "child_process"
-var external_child_process_ = __webpack_require__(2081);
-;// CONCATENATED MODULE: external "path"
-const external_path_namespaceObject = require("path");
-;// CONCATENATED MODULE: ./src/paths.ts
+// EXTERNAL MODULE: external "events"
+var external_events_ = __webpack_require__(2361);
+var external_events_default = /*#__PURE__*/__webpack_require__.n(external_events_);
+;// CONCATENATED MODULE: ./src/stream/events/events.ts
 
+const StreamEvents = new (external_events_default())();
+const createListeners = (listeners)=>{
+    return {
+        start () {
+            for (const { event , listener  } of listeners){
+                StreamEvents.on(event, listener);
+            }
+        },
+        stop () {
+            for (const { event , listener  } of listeners){
+                StreamEvents.removeListener(event, listener);
+            }
+        }
+    };
+};
 
-const captureBinFolder = (0,external_path_namespaceObject.join)(__dirname, "screen-capture");
-const captureBinExePath = (0,external_path_namespaceObject.join)(captureBinFolder, "main.exe");
-const captureVersionPath = (0,external_path_namespaceObject.join)(captureBinFolder, "version.txt");
-const captureSfxPath = (0,external_path_namespaceObject.join)(__dirname, "capture-win64.sfx.exe");
-const configPath = (0,external_path_namespaceObject.join)(__dirname, "BetterScreensharing.config.json");
-const gstreamerDllPath = (0,external_path_namespaceObject.join)(captureBinFolder, "dll");
-const gstreamerPluginsPath = (0,external_path_namespaceObject.join)(captureBinFolder, "plugins");
-
-// EXTERNAL MODULE: ../../node_modules/.pnpm/socket.io-client@2.3.1/node_modules/socket.io-client/lib/index.js
-var lib = __webpack_require__(286);
-var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 // EXTERNAL MODULE: external "stream"
 var external_stream_ = __webpack_require__(2781);
 // EXTERNAL MODULE: external "util"
@@ -10708,8 +10711,7 @@ const getSettings = ()=>{
     };
 };
 const getSettingsPanel = ()=>{
-    const Library = getLibrary();
-    const { Settings  } = Library;
+    const { Settings  } = getLibrary();
     const settings = getSettings();
     return Settings.SettingPanel.build(()=>saveSettings(settings), new Settings.Textbox("Resolution", "", settings.resolution, (e)=>{
         settings.resolution = e;
@@ -10739,13 +10741,28 @@ const getSettingsPanel = ()=>{
     }));
 };
 
-// EXTERNAL MODULE: external "events"
-var external_events_ = __webpack_require__(2361);
+// EXTERNAL MODULE: external "child_process"
+var external_child_process_ = __webpack_require__(2081);
+;// CONCATENATED MODULE: external "path"
+const external_path_namespaceObject = require("path");
+;// CONCATENATED MODULE: ./src/paths.ts
+
+
+const captureBinFolder = (0,external_path_namespaceObject.join)(__dirname, "screen-capture");
+const captureBinExePath = (0,external_path_namespaceObject.join)(captureBinFolder, "main.exe");
+const captureVersionPath = (0,external_path_namespaceObject.join)(captureBinFolder, "version.txt");
+const captureSfxPath = (0,external_path_namespaceObject.join)(__dirname, "capture-win64.sfx.exe");
+const configPath = (0,external_path_namespaceObject.join)(__dirname, "BetterScreensharing.config.json");
+const gstreamerDllPath = (0,external_path_namespaceObject.join)(captureBinFolder, "dll");
+const gstreamerPluginsPath = (0,external_path_namespaceObject.join)(captureBinFolder, "plugins");
+
+// EXTERNAL MODULE: ../../node_modules/.pnpm/socket.io-client@2.3.1/node_modules/socket.io-client/lib/index.js
+var lib = __webpack_require__(286);
+var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 ;// CONCATENATED MODULE: ./src/stream/socket.ts
 
 
 
-const StreamEvents = new external_events_.EventEmitter();
 let socket = null;
 const connectSocket = async ()=>{
     if (socket?.connected) {
@@ -10768,6 +10785,7 @@ const connectSocket = async ()=>{
 };
 const disconnectSocket = ()=>{
     if (socket) {
+        socket.removeAllListeners();
         socket.close();
         socket = null;
     }
@@ -10794,7 +10812,6 @@ const startCapture = ()=>{
     cp.stderr?.on("data", (data)=>{
         const str = data.toString();
         console.log(str);
-        console.log(str.includes("Connected to signaling server"));
         if (str.includes("Connected to signaling server")) {
             connectSocket();
         }
@@ -10826,11 +10843,9 @@ const { useCallback , useState , useEffect  } = React;
 
 
 const id = "nitedani-stream-toggle";
-// parent parent of the selector
+const buttonClass = "nitedani-stream-toggle-button";
 const userAreaSelector = "section[aria-label='User area']";
 const streamAreaSelector = "button[aria-label='Share Your Screen']";
-const isMounted = ()=>document.querySelector("#" + id);
-let observerSubscription = null;
 const buttonStyle = {
     height: 32,
     backgroundColor: "var(--background-primary)",
@@ -10848,21 +10863,32 @@ const buttonStyle = {
     alignItems: "center",
     position: "relative"
 };
-const buttonClass = "nitedani-stream-toggle-button";
 let injectedStyle = false;
+let currentLocation = "";
+let observerSubscription = null;
+const isMounted = ()=>document.querySelector("#" + id);
 const Component = ()=>{
     const { DiscordModules , Toasts  } = getLibrary();
     const [running, setRunning] = useState(isRunning());
     const [viewers, setViewers] = useState(0);
     useEffect(()=>{
-        StreamEvents.on("viewer_connected", (event)=>{
-            setViewers(event.viewerCount);
-        });
-        StreamEvents.on("viewer_disconnected", (event)=>{
-            setViewers(event.viewerCount);
-        });
+        const listeners = createListeners([
+            {
+                event: "viewer_connected",
+                listener: (event)=>{
+                    setViewers(event.viewerCount);
+                }
+            },
+            {
+                event: "viewer_disconnected",
+                listener: (event)=>{
+                    setViewers(event.viewerCount);
+                }
+            }, 
+        ]);
+        listeners.start();
         return ()=>{
-            StreamEvents.removeAllListeners();
+            listeners.stop();
         };
     }, []);
     const handleStreamStart = useCallback(()=>{
@@ -10938,13 +10964,12 @@ const getContainerElement = ()=>{
         };
     }
 };
-let currentLocation = "";
 const mountButton = async ()=>{
     const { DOMTools , Toasts  } = getLibrary();
     if (!injectedStyle) {
         injectedStyle = true;
         DOMTools.addStyle(buttonClass, button_namespaceObject);
-        DOMTools.addStyle("toast", Toasts.CSS);
+        DOMTools.addStyle("nitedani-toast", Toasts.CSS);
     }
     const mount = async ()=>{
         const currentEl = isMounted();
@@ -10984,6 +11009,11 @@ const unmountButton = ()=>{
         return;
     }
     el.remove();
+    const { DOMTools  } = getLibrary();
+    DOMTools.removeStyle(buttonClass);
+    DOMTools.removeStyle("nitedani-toast");
+    injectedStyle = false;
+    currentLocation = "";
 };
 
 // EXTERNAL MODULE: external "fs"
@@ -11018,7 +11048,6 @@ const updateCapture = async ()=>{
         const latestCaptureVersion = await checkCaptureLatestVersion();
         const installedVersion = (0,external_fs_.existsSync)(captureVersionPath) && (0,external_fs_.readFileSync)(captureVersionPath).toString("utf8");
         if (!installedVersion || installedVersion !== latestCaptureVersion) {
-            console.log(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`);
             try {
                 await (0,promises_namespaceObject.rmdir)(captureBinFolder, {
                     recursive: true
@@ -11026,7 +11055,8 @@ const updateCapture = async ()=>{
             } catch (error) {
                 console.error(error);
             }
-            await pipe(request(`https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`), (0,external_fs_.createWriteStream)(captureSfxPath));
+            const url = `https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`;
+            await pipe(request(url), (0,external_fs_.createWriteStream)(captureSfxPath));
             (0,external_child_process_.execFileSync)(captureSfxPath);
             (0,external_fs_.writeFileSync)(captureVersionPath, latestCaptureVersion);
         }
@@ -11038,7 +11068,31 @@ const updateCapture = async ()=>{
 };
 
 ;// CONCATENATED MODULE: ./package.json
-const package_namespaceObject = {"i8":"0.0.18"};
+const package_namespaceObject = {"i8":"0.0.19"};
+;// CONCATENATED MODULE: ./src/stream/events/sound.ts
+const soundEventListeners = [
+    {
+        event: "viewer_connected",
+        listener: (_event)=>{
+            try {
+                BdApi.findModuleByProps("playSound").playSound("stream_user_joined", 1);
+            } catch (error) {
+                console.error("Error playing sound", error);
+            }
+        }
+    },
+    {
+        event: "viewer_disconnected",
+        listener: (_event)=>{
+            try {
+                BdApi.findModuleByProps("playSound").playSound("stream_user_left", 1);
+            } catch (error) {
+                console.error("Error playing sound", error);
+            }
+        }
+    }, 
+];
+
 ;// CONCATENATED MODULE: ./src/index.tsx
 
 
@@ -11046,6 +11100,8 @@ const package_namespaceObject = {"i8":"0.0.18"};
 
 
 //@ts-ignore
+
+
 
 const config = {
     info: {
@@ -11067,15 +11123,20 @@ const createClass = ()=>{
     if (window.hasOwnProperty("ZeresPluginLibrary")) {
         const [BasePlugin, Library] = window.ZeresPluginLibrary.buildPlugin(config);
         setLibrary(Library);
+        const listeners = createListeners(soundEventListeners);
         return class BetterScreensharing extends BasePlugin {
             async onStart() {
+                // shouldn't do anything in this case
                 stopCapture();
+                // download new binary
                 updateCapture();
                 mountButton();
+                listeners.start();
             }
             async onStop() {
                 stopCapture();
                 unmountButton();
+                listeners.stop();
             }
             getSettingsPanel() {
                 return getSettingsPanel();

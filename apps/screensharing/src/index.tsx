@@ -5,6 +5,8 @@ import { updateCapture } from "./stream/update";
 import { setLibrary } from "./library";
 //@ts-ignore
 import { version } from "../package.json";
+import { createListeners } from "./stream/events/events";
+import { soundEventListeners } from "./stream/events/sound";
 
 const config = {
   info: {
@@ -29,16 +31,22 @@ const createClass = () => {
   if (window.hasOwnProperty("ZeresPluginLibrary")) {
     const [BasePlugin, Library] = window.ZeresPluginLibrary.buildPlugin(config);
     setLibrary(Library);
+    const listeners = createListeners(soundEventListeners);
+
     return class BetterScreensharing extends BasePlugin {
       async onStart() {
+        // shouldn't do anything in this case
         stopCapture();
+        // download new binary
         updateCapture();
         mountButton();
+        listeners.start();
       }
 
       async onStop() {
         stopCapture();
         unmountButton();
+        listeners.stop();
       }
 
       getSettingsPanel() {

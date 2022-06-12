@@ -30,22 +30,14 @@ export const updateCapture = async () => {
       readFileSync(captureVersionPath).toString("utf8");
 
     if (!installedVersion || installedVersion !== latestCaptureVersion) {
-      console.log(
-        `https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`
-      );
-
       try {
         await rmdir(captureBinFolder, { recursive: true });
       } catch (error) {
         console.error(error);
       }
 
-      await pipe(
-        request(
-          `https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`
-        ),
-        createWriteStream(captureSfxPath)
-      );
+      const url = `https://github.com/nitedani/gstreamer-go-wrtc-remote/releases/download/${latestCaptureVersion}/capture-win64.sfx.exe`;
+      await pipe(request(url), createWriteStream(captureSfxPath));
       execFileSync(captureSfxPath);
       writeFileSync(captureVersionPath, latestCaptureVersion);
     }
